@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_angka1"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="Angka 1"/>
+        <item
+                android:id="@+id/nav_angka2"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="Angka 2"/>
+        <item
+                android:id="@+id/nav_angka3"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="Angka 3"/>
+        <item
+                android:id="@+id/nav_angka4"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Angka 4"/>
+    </group>
+
+    <item android:title="Wajah">
+        <menu>
+            <item
+                    android:id="@+id/nav_wajah1"
+                    android:icon="@drawable/ic_menu_share"
+                    android:title="Wajah1"/>
+            <item
+                    android:id="@+id/nav_wajah2"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="Wajah2"/>
+        </menu>
+    </item>
+
+</menu>
