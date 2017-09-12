@@ -3,14 +3,20 @@ package com.example.nugroho.tugas3ipc;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NumberDetector {
-    public void detectNumber(int[][] arr, int x0, int y0){
+    public List<Integer> detectNumber(int[][] arr, int x0, int y0){
         int height = arr.length;
         int width = arr[0].length;
+        Log.d("sizing","w,h = "+width+","+height);
         int dir = 7;
         int x,xp,y,yp;
         x=xp=x0;
         y=yp=y0;
+        List<Integer> directions = new ArrayList<>();
+        Log.d("direction",""+arr[y0][x0]);
 
         int nextScanDir = dir;
         do {
@@ -23,13 +29,13 @@ public class NumberDetector {
                     nextScanDir = nextScan8l(nextScanDir);
                 x = nextScan8x(xp,nextScanDir);
                 y = nextScan8y(yp,nextScanDir);
-                Log.d("direction","from"+xp+","+yp+" to "+x+","+y+" dir "+nextScanDir);
-            } while (arr[x][y]!=1);
+            } while (arr[y][x]!=1);
             dir = nextScanDir;
-            Log.d("direction","dir "+dir);
+            directions.add(dir);
             xp=x;
             yp=y;
         } while(!((xp==x0)&&(yp==y0)));
+        return directions;
     }
 
     private int nextScan4(int dir){

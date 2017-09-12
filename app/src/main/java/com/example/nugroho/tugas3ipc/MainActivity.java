@@ -1,8 +1,12 @@
 package com.example.nugroho.tugas3ipc;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,6 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,13 +89,38 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_angka1) {
             NumberDetector numberDetector = new NumberDetector();
-            int[][] num = {
-                {0,0,0,0},
-                {0,0,1,0},
-                {0,1,1,0},
-                {0,0,0,0}
-            };
-            numberDetector.detectNumber(num,2,1);
+            Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.square);
+            Log.d("sizing","w,h = "+bitmap.getWidth()+","+bitmap.getHeight());
+            int[][] array = new int[bitmap.getHeight()][bitmap.getWidth()];
+            for(int x=0;x<bitmap.getWidth();x++){
+                for(int y=0;y<bitmap.getHeight();y++){
+                    if(Color.red(bitmap.getPixel(x,y))>50){
+                        array[y][x] = 0;
+                    } else {
+                        array[y][x] = 1;
+                    }
+                }
+            }
+
+            boolean stop = false;
+            int x=0,y=0;
+            for(y=0;(y<array.length)&&!stop;y++){
+                for(x=0;(x<array[0].length)&&!stop;x++){
+                    if(array[y][x]==1){
+                        stop = true;
+                    }
+                }
+            }
+            x--;y--;
+            Log.d("sizing","x,y"+x+","+y);
+            List<Integer> directions = numberDetector.detectNumber(array,x,y);
+            int[] directionCount = new int[8];
+            for(Integer dir:directions){
+                directionCount[dir]++;
+            }
+            for(int i=0;i<8;i++){
+                Log.d("direction",i+":"+directionCount[i]);
+            }
         } else if (id == R.id.nav_angka2) {
 
         } else if (id == R.id.nav_angka3) {
