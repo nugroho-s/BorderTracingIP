@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -88,10 +89,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_angka1) {
-            NumberDetector numberDetector = new NumberDetector();
-            Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.square);
+            Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.one);
             Log.d("sizing","w,h = "+bitmap.getWidth()+","+bitmap.getHeight());
-            int[][] array = new int[bitmap.getHeight()][bitmap.getWidth()];
+            char[][] array = new char[bitmap.getHeight()][bitmap.getWidth()];
             for(int x=0;x<bitmap.getWidth();x++){
                 for(int y=0;y<bitmap.getHeight();y++){
                     if(Color.red(bitmap.getPixel(x,y))>50){
@@ -113,14 +113,28 @@ public class MainActivity extends AppCompatActivity
             }
             x--;y--;
             Log.d("sizing","x,y"+x+","+y);
-            List<Integer> directions = numberDetector.detectNumber(array,x,y);
+            NumberDetector numberDetector = new NumberDetector(array);
+            List<Character> directions = numberDetector.detectNumber(x,y);
+            ArrayList<SimplifiedDirection> simplifiedDirections = new ArrayList<>();
             int[] directionCount = new int[8];
-            for(Integer dir:directions){
-                directionCount[dir]++;
+            int prevDir=-1;
+            SimplifiedDirection simplifiedDirection = null;
+            for(char dir:directions){
+                if(dir!=prevDir){
+                    if(prevDir!=-1){
+                        simplifiedDirections.add(simplifiedDirection);
+                    }
+                    prevDir=dir;
+                    simplifiedDirection = new SimplifiedDirection(dir,0);
+                }
+                simplifiedDirection.count++;
             }
-            for(int i=0;i<8;i++){
-                Log.d("direction",i+":"+directionCount[i]);
+            simplifiedDirections.add(simplifiedDirection);
+            for(SimplifiedDirection sd:simplifiedDirections){
+                Log.d("direction",(int)(sd.direction)+":"+sd.count);
             }
+            Log.d("direction","isOne:"+numberDetector.isOne(simplifiedDirections));
+            Log.d("direction","isZero:"+numberDetector.isZero(simplifiedDirections));
         } else if (id == R.id.nav_angka2) {
 
         } else if (id == R.id.nav_angka3) {
