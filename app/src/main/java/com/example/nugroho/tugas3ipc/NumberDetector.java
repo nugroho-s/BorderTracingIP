@@ -14,6 +14,7 @@ public class NumberDetector {
     }
 
     public List<Character> detectNumber(int x0, int y0){
+        Log.d("detector","called");
         int height = arr.length;
         int width = arr[0].length;
         Log.d("sizing","w,h = "+width+","+height);
@@ -42,6 +43,14 @@ public class NumberDetector {
         } while(!((xp==x0)&&(yp==y0)));
         fillArea(x0,y0,(char)1,(char)0);
         return directions;
+    }
+
+    public char detectChar(List<SimplifiedDirection> simplifiedDirections){
+        if(isZero(simplifiedDirections))
+            return '0';
+        if(isOne(simplifiedDirections))
+            return '1';
+        return '-';
     }
 
     public boolean isOne(List<SimplifiedDirection> simplifiedDirections){
