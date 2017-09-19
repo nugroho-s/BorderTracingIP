@@ -3,6 +3,7 @@ package com.example.nugroho.tugas3ipc;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,9 +22,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     SeekBar seekBarThreshold;
     Bitmap wajahBitmap;
     int threshold;
+    char[][] bwArr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +80,11 @@ public class MainActivity extends AppCompatActivity
             public void onStopTrackingTouch(SeekBar seekBar) {
                 threshold = seekBar.getProgress();
                 if(wajahBitmap!=null){
+                    bwArr =new char[wajahBitmap.getHeight()][wajahBitmap.getWidth()];
                     Bitmap bw = convertToBw(threshold);
                     imageView.setImageBitmap(bw);
+                    int jumlahKomponen = hitungKomponen();
+                    textView.setText("Jumlah komponen = "+jumlahKomponen);
                 }
             }
         });
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_wajah1) {
             wajahBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.wajah1);
         } else if (id == R.id.nav_wajah2) {
-
+            wajahBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.square);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -184,6 +187,7 @@ public class MainActivity extends AppCompatActivity
                 int b = Color.blue(pixelColor);
                 int grey = (r+g+b)/3;
                 bw.setPixel(x,y,(grey<threshold)?BLACK:WHITE);
+                bwArr[y][x] = (grey<threshold)?(char)0:1;
             }
         }
         return bw;
@@ -210,5 +214,47 @@ public class MainActivity extends AppCompatActivity
             Log.d("direction",(int)(sd.direction)+":"+sd.count);
         }
         return numberDetector.detectChar(simplifiedDirections);
+    }
+
+    public int hitungKomponen(){
+        int height = bwArr.length;
+        int width = bwArr[0].length;
+        int ret = 0;
+        for(int y=0;y<height;y++){
+            for(int x=0;x<width;x++){
+                if(bwArr[y][x]==0){
+                    fillArea(bwArr,x,y,(char)0,(char)1);
+                    ret++;
+//                    Log.d("filling",x+","+y+":"+(int)bwArr[y][x]);
+                }
+            }
+        }
+        return 10;
+    }
+
+    public void fillArea (char[][] array,int x, int y, char original, char fill){
+//        if (x != 0)
+//            x--;
+//        if (y!= 0)
+//            y--;
+        Queue<Point> queue = new LinkedList<Point>();
+        if (array[y][x] != original){
+            return;
+        }
+        queue.add(new Point(x, y));
+
+        while (!queue.isEmpty()){
+            Point p = queue.remove();
+            if (array[y][x] == original){
+                Log.d("filling","filled");
+                array[y][x] = fill;
+                queue.add(new Point(p.x-1, p.y));
+                queue.add(new Point(p.x+1, p.y));
+                queue.add(new Point(p.x, p.y-1));
+                queue.add(new Point(p.x, p.y+1));
+            }
+        }
+
+        return;
     }
 }
