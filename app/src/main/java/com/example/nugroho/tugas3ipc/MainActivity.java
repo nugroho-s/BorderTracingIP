@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_wajah1) {
             wajahBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.wajah1);
         } else if (id == R.id.nav_wajah2) {
-            wajahBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.square);
+            wajahBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.square_equalized);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -223,38 +223,51 @@ public class MainActivity extends AppCompatActivity
         for(int y=0;y<height;y++){
             for(int x=0;x<width;x++){
                 if(bwArr[y][x]==0){
-                    fillArea(bwArr,x,y,(char)0,(char)1);
-                    ret++;
+                    if (fillArea(bwArr,x,y,(char)0,(char)1))
+                        ret++;
 //                    Log.d("filling",x+","+y+":"+(int)bwArr[y][x]);
                 }
             }
         }
-        return 10;
+        return ret;
     }
 
-    public void fillArea (char[][] array,int x, int y, char original, char fill){
+    public boolean fillArea (char[][] array,int x, int y, char original, char fill){
 //        if (x != 0)
 //            x--;
 //        if (y!= 0)
 //            y--;
         Queue<Point> queue = new LinkedList<Point>();
+        int height = array.length;
+        int width = array[0].length;
         if (array[y][x] != original){
-            return;
+            return false;
         }
         queue.add(new Point(x, y));
 
+        int count = 0;
+        int totalPixel = height*width;
+
         while (!queue.isEmpty()){
             Point p = queue.remove();
-            if (array[y][x] == original){
-                Log.d("filling","filled");
-                array[y][x] = fill;
-                queue.add(new Point(p.x-1, p.y));
-                queue.add(new Point(p.x+1, p.y));
-                queue.add(new Point(p.x, p.y-1));
-                queue.add(new Point(p.x, p.y+1));
+            if((p.y<height)&&(p.x<width)&&(p.y>=0)&&(p.x>=0)){
+                if (array[p.y][p.x] == original){
+                    array[p.y][p.x] = fill;
+                    count++;
+                    queue.add(new Point(p.x-1, p.y));
+                    queue.add(new Point(p.x+1, p.y));
+                    queue.add(new Point(p.x, p.y-1));
+                    queue.add(new Point(p.x, p.y+1));
+                    queue.add(new Point(p.x+1,p.y+1));
+                    queue.add(new Point(p.x+1,p.y-1));
+                    queue.add(new Point(p.x-1,p.y-1));
+                    queue.add(new Point(p.x-1,p.y+1));
+                }
             }
         }
 
-        return;
+        int limit = totalPixel/10000;
+
+        return (count>=limit)?true:false;
     }
 }
