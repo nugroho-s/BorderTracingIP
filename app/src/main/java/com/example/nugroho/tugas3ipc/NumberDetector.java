@@ -1,6 +1,7 @@
 package com.example.nugroho.tugas3ipc;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.util.Log;
 
@@ -13,7 +14,7 @@ public class NumberDetector {
         this.arr = arr;
     }
 
-    public List<Character> detectNumber(int x0, int y0){
+    public List<Character> detectNumber(int x0, int y0, Bitmap bitmap){
         Log.d("detector","called");
         int height = arr.length;
         int width = arr[0].length;
@@ -28,6 +29,7 @@ public class NumberDetector {
         do {
             nextScanDir = nextScan8(dir);
             boolean first = true;
+            int ctr=0;
             do {
                 if (first)
                     first=false;
@@ -35,9 +37,11 @@ public class NumberDetector {
                     nextScanDir = nextScan8l(nextScanDir);
                 x = nextScan8x(xp,nextScanDir);
                 y = nextScan8y(yp,nextScanDir);
-            } while (arr[y][x]!=1);
+                ctr++;
+            } while ((arr[y][x]!=1)&&(ctr<=8));
             dir = nextScanDir;
             directions.add((char)dir);
+            bitmap.setPixel(x,y, Color.RED);
             xp=x;
             yp=y;
         } while(!((xp==x0)&&(yp==y0)));

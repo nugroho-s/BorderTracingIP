@@ -29,11 +29,15 @@ public class MainActivity extends AppCompatActivity
 
     private static int BLACK = Color.rgb(0, 0, 0);
     private static int WHITE = Color.rgb(255, 255, 255);
+    private static int RED = Color.rgb(255, 0, 0);
 
     ImageView imageView;
+    ImageView imageView2;
     TextView textView;
     SeekBar seekBarThreshold;
     Bitmap wajahBitmap;
+    Bitmap srcBorder;
+    Bitmap bitmapBorder;
     int threshold;
     char[][] bwArr;
 
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity
 
         imageView = (ImageView) findViewById(R.id.imageContent);
         textView = (TextView) findViewById(R.id.textContent);
+        imageView2 = (ImageView) findViewById(R.id.imageContent2);
         seekBarThreshold = (SeekBar) findViewById(R.id.seekBarThreshold);
         seekBarThreshold.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -85,6 +90,8 @@ public class MainActivity extends AppCompatActivity
                     imageView.setImageBitmap(bw);
                     int jumlahKomponen = hitungKomponen();
                     textView.setText("Jumlah komponen = "+jumlahKomponen);
+                } else {
+
                 }
             }
         });
@@ -129,13 +136,14 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_angka1) {
-            Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.g092017);
-            imageView.setImageBitmap(bitmap);
-            Log.d("sizing","w,h = "+bitmap.getWidth()+","+bitmap.getHeight());
-            char[][] array = new char[bitmap.getHeight()][bitmap.getWidth()];
-            for(int x=0;x<bitmap.getWidth();x++){
-                for(int y=0;y<bitmap.getHeight();y++){
-                    if(Color.red(bitmap.getPixel(x,y))>50){
+            srcBorder = BitmapFactory.decodeResource(this.getResources(), R.drawable.gc);
+            imageView.setImageBitmap(srcBorder);
+            bitmapBorder = Bitmap.createBitmap(srcBorder.getWidth(), srcBorder.getHeight(), Bitmap.Config.ARGB_8888);
+            Log.d("sizing","w,h = "+srcBorder.getWidth()+","+srcBorder.getHeight());
+            char[][] array = new char[srcBorder.getHeight()][srcBorder.getWidth()];
+            for(int x=0;x<srcBorder.getWidth();x++){
+                for(int y=0;y<srcBorder.getHeight();y++){
+                    if(getGrey(srcBorder.getPixel(x,y))>threshold){
                         array[y][x] = 0;
                     } else {
                         array[y][x] = 1;
@@ -153,11 +161,12 @@ public class MainActivity extends AppCompatActivity
                         char res = numberDetection(numberDetector,x,y);
                         if((res=='1')||(res=='0'))
                             result[Character.getNumericValue(res)]++;
-                        Log.d("result",""+res);
+                        Log.d("resultBorder",""+res);
                     }
                 }
             }
             textView.setText("0:"+result[0]+"\n1:"+result[1]);
+            imageView2.setImageBitmap(bitmapBorder);
         } else if (id == R.id.nav_angka2) {
 
         } else if (id == R.id.nav_angka3) {
@@ -194,7 +203,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public char numberDetection(NumberDetector numberDetector, int x, int y){
-        List<Character> directions = numberDetector.detectNumber(x,y);
+        List<Character> directions = numberDetector.detectNumber(x,y,bitmapBorder);
         ArrayList<SimplifiedDirection> simplifiedDirections = new ArrayList<>();
         int[] directionCount = new int[8];
         int prevDir=-1;
@@ -269,5 +278,9 @@ public class MainActivity extends AppCompatActivity
         int limit = totalPixel/10000;
 
         return (count>=limit)?true:false;
+    }
+
+    int getGrey(int color){
+        return (Color.red(color)+Color.green(color)+Color.blue(color))/3;
     }
 }
