@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity
                     int jumlahKomponen = hitungKomponen();
                     textView.setText("Jumlah komponen = "+jumlahKomponen);
                 } else {
-
+                    bitmapBorder = Bitmap.createBitmap(srcBorder.getWidth(), srcBorder.getHeight(), Bitmap.Config.ARGB_8888);
+                    photoTracing();
                 }
             }
         });
@@ -140,33 +141,8 @@ public class MainActivity extends AppCompatActivity
             imageView.setImageBitmap(srcBorder);
             bitmapBorder = Bitmap.createBitmap(srcBorder.getWidth(), srcBorder.getHeight(), Bitmap.Config.ARGB_8888);
             Log.d("sizing","w,h = "+srcBorder.getWidth()+","+srcBorder.getHeight());
-            char[][] array = new char[srcBorder.getHeight()][srcBorder.getWidth()];
-            for(int x=0;x<srcBorder.getWidth();x++){
-                for(int y=0;y<srcBorder.getHeight();y++){
-                    if(getGrey(srcBorder.getPixel(x,y))>threshold){
-                        array[y][x] = 0;
-                    } else {
-                        array[y][x] = 1;
-                    }
-                }
-            }
-
-            boolean stop = false;
-            int x=0,y=0;
-            NumberDetector numberDetector = new NumberDetector(array);
-            int[] result = new int[2];
-            for(y=0;(y<array.length)&&!stop;y++){
-                for(x=0;(x<array[0].length)&&!stop;x++){
-                    if(array[y][x]==1){
-                        char res = numberDetection(numberDetector,x,y);
-                        if((res=='1')||(res=='0'))
-                            result[Character.getNumericValue(res)]++;
-                        Log.d("resultBorder",""+res);
-                    }
-                }
-            }
-            textView.setText("0:"+result[0]+"\n1:"+result[1]);
-            imageView2.setImageBitmap(bitmapBorder);
+            threshold=50;
+            photoTracing();
         } else if (id == R.id.nav_angka2) {
 
         } else if (id == R.id.nav_angka3) {
@@ -278,6 +254,36 @@ public class MainActivity extends AppCompatActivity
         int limit = totalPixel/10000;
 
         return (count>=limit)?true:false;
+    }
+
+    public void photoTracing(){
+        char[][] array = new char[srcBorder.getHeight()][srcBorder.getWidth()];
+        for(int x=0;x<srcBorder.getWidth();x++){
+            for(int y=0;y<srcBorder.getHeight();y++){
+                if(getGrey(srcBorder.getPixel(x,y))>threshold){
+                    array[y][x] = 0;
+                } else {
+                    array[y][x] = 1;
+                }
+            }
+        }
+
+        boolean stop = false;
+        int x=0,y=0;
+        NumberDetector numberDetector = new NumberDetector(array);
+        int[] result = new int[2];
+        for(y=0;(y<array.length)&&!stop;y++){
+            for(x=0;(x<array[0].length)&&!stop;x++){
+                if(array[y][x]==1){
+                    char res = numberDetection(numberDetector,x,y);
+                    if((res=='1')||(res=='0'))
+                        result[Character.getNumericValue(res)]++;
+                    Log.d("resultBorder",""+res);
+                }
+            }
+        }
+        textView.setText("0:"+result[0]+"\n1:"+result[1]);
+        imageView2.setImageBitmap(bitmapBorder);
     }
 
     int getGrey(int color){

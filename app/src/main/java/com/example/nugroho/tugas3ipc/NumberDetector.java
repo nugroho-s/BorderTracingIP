@@ -7,10 +7,9 @@ import android.util.Log;
 
 import java.util.*;
 
-public class NumberDetector {
-    char[][] arr;
-
+public class NumberDetector extends ObjectDetector{
     public NumberDetector(char[][] arr){
+        super(arr);
         this.arr = arr;
     }
 
@@ -77,82 +76,5 @@ public class NumberDetector {
             }
         }
         return true;
-    }
-
-    private int nextScan4(int dir){
-        return (dir+3)%4;
-    }
-
-    private int nextScan4x(int x, int dir){
-        if(dir==0){
-            return x+1;
-        } else if(dir==2){
-            return x-1;
-        }
-        return x;
-    }
-
-    private int nextScan4y(int y, int dir){
-        if(dir==3){
-            return y+1;
-        } else if(dir==1){
-            return y-1;
-        }
-        return y;
-    }
-
-    private int nextScan4l(int dir){
-        return (dir+1)%4;
-    }
-
-    private int nextScan8(int dir){
-        return (dir%2==0) ? (dir+7)%8 : (dir+6)%8;
-    }
-
-    private int nextScan8l(int dir){
-        return (dir+1)%8;
-    }
-
-    private int nextScan8x(int x, int dir){
-        if((dir==0)||(dir==1)||(dir==7)){
-            return x+1;
-        } else if ((dir==3)||(dir==4)||(dir==5)){
-            return x-1;
-        }
-        return x;
-    }
-
-    private int nextScan8y(int y, int dir){
-        if((dir==5)||(dir==6)||(dir==7)){
-            return y+1;
-        } else if ((dir==1)||(dir==2)||(dir==3)){
-            return y-1;
-        }
-        return y;
-    }
-
-    public void fillArea (int x, int y, char original, char fill){
-//        if (x != 0)
-//            x--;
-//        if (y!= 0)
-//            y--;
-        Queue<Point> queue = new LinkedList<Point>();
-        if (arr[y][x] != original){
-            return;
-        }
-        queue.add(new Point(x, y));
-
-        while (!queue.isEmpty()){
-            Point p = queue.remove();
-            if (arr[p.y][p.x] == original){
-                arr[p.y][p.x] = fill;
-                queue.add(new Point(p.x-1, p.y));
-                queue.add(new Point(p.x+1, p.y));
-                queue.add(new Point(p.x, p.y-1));
-                queue.add(new Point(p.x, p.y+1));
-            }
-        }
-
-        return;
     }
 }
