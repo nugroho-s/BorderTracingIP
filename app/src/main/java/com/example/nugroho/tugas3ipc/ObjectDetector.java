@@ -17,7 +17,7 @@ public class ObjectDetector {
         this.arr = arr;
     }
 
-    public List<Character> detectNumber(int x0, int y0, Bitmap bitmap){
+    public List<Character> getObjectChainCode(int x0, int y0, Bitmap bitmap){
         Log.d("detector","called");
         int height = arr.length;
         int width = arr[0].length;

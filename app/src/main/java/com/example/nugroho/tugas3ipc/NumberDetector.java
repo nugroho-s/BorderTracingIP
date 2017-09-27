@@ -1,51 +1,11 @@
 package com.example.nugroho.tugas3ipc;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.util.Log;
-
-import java.util.*;
+import java.util.List;
 
 public class NumberDetector extends ObjectDetector{
     public NumberDetector(char[][] arr){
         super(arr);
         this.arr = arr;
-    }
-
-    public List<Character> detectNumber(int x0, int y0, Bitmap bitmap){
-        Log.d("detector","called");
-        int height = arr.length;
-        int width = arr[0].length;
-        Log.d("sizing","w,h = "+width+","+height);
-        int dir = 7;
-        int x,xp,y,yp;
-        x=xp=x0;
-        y=yp=y0;
-        List<Character> directions = new ArrayList<>();
-
-        int nextScanDir = dir;
-        do {
-            nextScanDir = nextScan8(dir);
-            boolean first = true;
-            int ctr=0;
-            do {
-                if (first)
-                    first=false;
-                else
-                    nextScanDir = nextScan8l(nextScanDir);
-                x = nextScan8x(xp,nextScanDir);
-                y = nextScan8y(yp,nextScanDir);
-                ctr++;
-            } while ((arr[y][x]!=1)&&(ctr<=8));
-            dir = nextScanDir;
-            directions.add((char)dir);
-            bitmap.setPixel(x,y, Color.RED);
-            xp=x;
-            yp=y;
-        } while(!((xp==x0)&&(yp==y0)));
-        fillArea(x0,y0,(char)1,(char)0);
-        return directions;
     }
 
     public char detectChar(List<SimplifiedDirection> simplifiedDirections){

@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.*;
 
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public char numberDetection(NumberDetector numberDetector, int x, int y){
-        List<Character> directions = numberDetector.detectNumber(x,y,bitmapBorder);
+        List<Character> directions = numberDetector.getObjectChainCode(x,y,bitmapBorder);
         ArrayList<SimplifiedDirection> simplifiedDirections = new ArrayList<>();
         int[] directionCount = new int[8];
         int prevDir=-1;
